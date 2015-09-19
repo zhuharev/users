@@ -1,0 +1,7 @@
+=============== Sep 19, 2015 (MSK) ===============
+21:46:47.652748 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+21:46:47.652947 db@open opening
+21:46:47.653028 journal@recovery F·1
+21:46:47.653206 journal@recovery recovering @16
+21:46:47.653895 db@janitor F·2 G·0
+21:46:47.653921 db@open done T·954.827µs

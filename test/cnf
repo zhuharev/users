@@ -1,0 +1,16 @@
+[app]
+secret=asdasi123jfsjn123fvserqerwp13iweropjm324vxnm
+
+[web]
+host=example.com
+
+[database]
+driver=sqlite3
+setting=:memory:
+kvpath="kv.db"
+
+[mail]
+sender=mail@example.com
+password=pass123
+server=smtp.example.com
+port=465
