@@ -59,6 +59,7 @@ func (s *Service) CreateUser(username, password string) (*User, error) {
 	}
 	u := new(User)
 	u.Name = username
+	u.Data = map[string]interface{}{}
 	hashedPassword, e := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if e != nil {
 		return nil, e
@@ -66,4 +67,30 @@ func (s *Service) CreateUser(username, password string) (*User, error) {
 	u.HashedPassword = hashedPassword
 	e = s.Store.Save(u)
 	return u, e
+}
+
+func (s *Service) MakeAdminPermission(uid int64) error {
+	u, e := s.Store.Get(uid)
+	if e != nil {
+		return e
+	}
+	u.Status = u.Status.Add(Admin)
+	e = s.Store.Save(u)
+	if e != nil {
+		return e
+	}
+	return nil
+}
+
+func (s *Service) DeleteAdminPermission(uid int64) error {
+	u, e := s.Store.Get(uid)
+	if e != nil {
+		return e
+	}
+	u.Status = u.Status.Remove(Admin)
+	e = s.Store.Save(u)
+	if e != nil {
+		return e
+	}
+	return nil
 }

@@ -19,6 +19,10 @@ type Config struct {
 		Server           string
 		Port             int
 	}
+	Admin struct {
+		Login    string
+		Password string
+	}
 }
 
 func NewFromFile(filepath string) (*Config, error) {
