@@ -6,23 +6,25 @@ import (
 )
 
 type User struct {
-	Id   int64
+	Id   int64  `json:"id"`
 	Name string `xorm:"unique index"`
 
-	FirstName, LastName, Patronymic string
+	FirstName  string `json:"first_name"`
+	LastName   string `json:"last_name"`
+	Patronymic string `json:"patronymic"`
 
 	Phone string
-	Email string `xorm:"unique index"`
+	Email string `xorm:"unique index" json:"email"`
 
-	Status Status
+	Status Status `json:"status"`
 
-	HashedPassword []byte
+	HashedPassword []byte `json:"-"`
 
-	Data UserData
+	Data UserData `json:"data"`
 
 	Created time.Time `xorm:"created"`
 	Updated time.Time `xorm:"updated"`
-	Deleted time.Time `xorm:"deleted"`
+	Deleted time.Time `xorm:"deleted" json:"-"`
 }
 
 type UserData map[string]interface{}
@@ -33,4 +35,13 @@ func (u *User) ValidatePassword(password string) bool {
 		return false
 	}
 	return true
+}
+
+func (u *User) SetPassword(password string) error {
+	hashedPassword, e := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if e != nil {
+		return e
+	}
+	u.HashedPassword = hashedPassword
+	return nil
 }

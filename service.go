@@ -2,7 +2,6 @@ package users
 
 import (
 	"github.com/zhuharev/users/config"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type Service struct {
@@ -60,11 +59,10 @@ func (s *Service) CreateUser(username, password string) (*User, error) {
 	u := new(User)
 	u.Name = username
 	u.Data = map[string]interface{}{}
-	hashedPassword, e := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	e := u.SetPassword(password)
 	if e != nil {
 		return nil, e
 	}
-	u.HashedPassword = hashedPassword
 	e = s.Store.Save(u)
 	return u, e
 }
