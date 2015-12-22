@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"gopkg.in/gcfg.v1"
 )
 
@@ -26,6 +27,9 @@ type Config struct {
 }
 
 func NewFromFile(filepath string) (*Config, error) {
+	if filepath == "" {
+		return nil, fmt.Errorf("Empty config path")
+	}
 	cnf := new(Config)
 	e := gcfg.ReadFileInto(cnf, filepath)
 	return cnf, e
