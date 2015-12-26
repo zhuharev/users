@@ -1,0 +1,54 @@
+syntax = "proto2";
+
+package users;
+
+// The greeting service definition.
+service Users {
+  // Sends a greeting
+  rpc Get(GetRequest) returns (HelloReply) {}
+}
+
+message User {
+	required int64 Id = 1;
+	required string Name = 2;
+	required string FirstName = 3;
+	required string LastName = 4;
+	required string Patronymic  = 5;
+
+	required string Phone = 6;
+	required string Email = 7;
+
+
+	required int64 Status = 8;
+
+	required bytes HashedPassword = 9;
+
+	required bytes Data = 10;
+
+	required int64 Created = 11;
+	required int64 Updated = 12;
+	required int64 Deleted = 13;
+}
+
+message GetRequest {
+	required int64 id = 1;
+}
+
+message GetResponse {
+	required User user = 1;
+	required Error error = 2; 
+}
+
+message Error {
+	required string message = 1;
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+ required  string name = 1;
+}
+
+// The response message containing the greetings
+message HelloReply {
+  required string message = 1;
+}

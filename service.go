@@ -22,7 +22,7 @@ func NewFromConfig(cnf *config.Config) (*Service, error) {
 	s := new(Service)
 	s.Config = cnf
 
-	store, e := NewStore(cnf.Database.Driver, cnf.Database.Setting)
+	store, e := NewStore(cnf)
 	if e != nil {
 		return nil, e
 	}
@@ -33,6 +33,11 @@ func NewFromConfig(cnf *config.Config) (*Service, error) {
 		return nil, e
 	}
 	s.KV = kv
+
+	e = s.checkInstall()
+	if e != nil {
+		return nil, e
+	}
 
 	return s, nil
 }
@@ -58,6 +63,7 @@ func (s *Service) CreateUser(username, password string) (*User, error) {
 	}
 	u := new(User)
 	u.Name = username
+	u.Email = username
 	u.Data = map[string]interface{}{}
 	e := u.SetPassword(password)
 	if e != nil {
@@ -89,6 +95,21 @@ func (s *Service) DeleteAdminPermission(uid int64) error {
 	e = s.Store.Save(u)
 	if e != nil {
 		return e
+	}
+	return nil
+}
+
+func (s *Service) checkInstall() error {
+	count, e := s.Store.Count()
+	if e != nil {
+		return e
+	}
+	if count == 0 {
+		u, e := s.CreateUser(s.Config.Admin.Login, s.Config.Admin.Password)
+		if e != nil {
+			return e
+		}
+		return s.MakeAdminPermission(u.Id)
 	}
 	return nil
 }

@@ -7,7 +7,8 @@ import (
 
 type Config struct {
 	App struct {
-		Secret string
+		Secret  string
+		LogFile string
 	}
 	Web struct {
 		Host string

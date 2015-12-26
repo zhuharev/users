@@ -23,16 +23,26 @@ func (s *Store) Connect(setting string) error {
 	if e != nil {
 		return e
 	}
-	e = eng.Sync(&users.User{})
+	eng.SetLogger(nil)
+	e = eng.Sync2(&users.User{})
 	if e != nil {
 		return e
 	}
-	f, e := os.Create("sql.log")
-	if e != nil {
-		return e
-	}
-	eng.Logger = xorm.NewSimpleLogger(f)
+
 	s.eng = eng
+	return nil
+}
+
+func (s *Store) SetLogFile(path string) error {
+	if path == "" {
+		return nil
+	}
+	f, e := os.Create(path)
+	if e != nil {
+		return e
+	}
+	s.eng.Logger = xorm.NewSimpleLogger(f)
+	s.eng.ShowSQL = true
 	return nil
 }
 
@@ -63,12 +73,15 @@ func (s *Store) Get(id int64) (*users.User, error) {
 	return u, nil
 }
 
-func (s *Store) Read(int64, ...int64) ([]*users.User, error) {
-	return nil, nil
+func (s *Store) Read(limit int, offset ...int) ([]*users.User, error) {
+	var us []*users.User
+	e := s.eng.Limit(limit, offset...).Find(&us)
+	return us, e
 }
 
-func (s *Store) Delete(int64) error {
-	return nil
+func (s *Store) Delete(id int64) error {
+	_, e := s.eng.Id(id).Delete(new(users.User))
+	return e
 }
 
 func (s *Store) Count() (int64, error) {
