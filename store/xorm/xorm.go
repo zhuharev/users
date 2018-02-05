@@ -1,9 +1,10 @@
 package xorm
 
 import (
+	"os"
+
 	"github.com/go-xorm/xorm"
 	"github.com/zhuharev/users"
-	"os"
 )
 
 type Store struct {
@@ -41,8 +42,8 @@ func (s *Store) SetLogFile(path string) error {
 	if e != nil {
 		return e
 	}
-	s.eng.Logger = xorm.NewSimpleLogger(f)
-	s.eng.ShowSQL = true
+	s.eng.SetLogger(xorm.NewSimpleLogger(f))
+	s.eng.ShowSQL()
 	return nil
 }
 
